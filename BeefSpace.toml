@@ -1,0 +1,5 @@
+FileVersion = 1
+Projects = {ShellCore = {Path = "ShellCore"}, ShellRuntime = {Path = "ShellRuntime"}, ShellFormat = {Path = "ShellFormat"}, ShellSimulation = {Path = "ShellSimulation"}, ShellPlatformWin = {Path = "ShellPlatformWin"}}
+
+[Workspace]
+StartupProject = "ShellRuntime"

@@ -1,0 +1,66 @@
+juno-shell 1.0
+Project 00000000000000a1
+{
+	Name:string = "Minimal sample"
+	Entry:id = 00000000000000c1
+	globals[
+		Global 00000000000000b1
+		{
+			Name:string = "HighAlertMode"
+			Kind:enum = Bool
+			Initial:bool = false
+		}
+	]
+	compositions[
+		Composition 00000000000000c1
+		{
+			Name:string = "Desktop"
+			root[
+				Widget 00000000000000d1
+				{
+					Type:string = "Panel"
+					Name:string = "Root"
+					prop.Bounds:rect = 0 0 1920 1080
+					skin[
+						Skin -
+						{
+							layers[
+								Layer 00000000000000e1
+								{
+									Name:string = "Content"
+									Role:enum = Content
+									Essential:bool = true
+								}
+							]
+							root[
+								Element 00000000000000f1
+								{
+									Kind:enum = Shape
+									Type:string = "Element"
+									Name:string = "Background"
+									prop.Size:vector2 = 1920 1080
+									bindings[
+										Binding 00000000000000f2
+										{
+											Target:string = "Opacity"
+											SourceKind:enum = GlobalVariable
+											SourceMember:string = "HighAlertMode"
+											converters[
+												Converter -
+												{
+													Kind:enum = Select
+													Arg0:float = 0.5
+													Arg1:float = 1
+												}
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}
