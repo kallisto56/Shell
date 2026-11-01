@@ -73,11 +73,12 @@ class WinApplicationLauncher : IApplicationLauncher
 	// Start menu shortcuts of all users and of the current user, sorted by name. Entries are owned by the caller's list.
 	public void GetInstalledApplications(List<ApplicationEntry> output)
 	{
-		let programData = scope String();
-		if (Environment.GetEnvironmentVariable("ProgramData", programData) case .Ok)
+		var vars = scope Dictionary<String, String>();
+		Environment.GetEnvironmentVariables(vars);
+
+		if (vars.TryGet("ProgramData", var key0, var programData))
 			Scan(scope $"{programData}\\Microsoft\\Windows\\Start Menu\\Programs", 0, output);
-		let appData = scope String();
-		if (Environment.GetEnvironmentVariable("AppData", appData) case .Ok)
+		if (vars.TryGet("AppData", var key1, var appData))
 			Scan(scope $"{appData}\\Microsoft\\Windows\\Start Menu\\Programs", 0, output);
 
 		output.Sort(scope (a, b) => String.Compare(a.mDisplayName, b.mDisplayName, true));

@@ -28,7 +28,7 @@ class VirtualMonitorService : IMonitorService
 
 	public void Clear()
 	{
-		DeleteAndClearItems!(mMonitors);
+		mMonitors.ClearAndDeleteItems();
 		mBaseWorkAreas.Clear();
 		Notify();
 	}

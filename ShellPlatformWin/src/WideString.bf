@@ -34,7 +34,7 @@ static class WideString
 		{
 			uint32 cp = (uint32)text[i];
 			i++;
-			if (cp >= 0xD800 && cp <= 0xDBFF && i < maxLength && text[i] >= 0xDC00 && text[i] <= 0xDFFF)
+			if (cp >= 0xD800 && cp <= 0xDBFF && i < maxLength && cp >= 0xDC00 && cp <= 0xDFFF)
 			{
 				cp = 0x10000 + ((cp - 0xD800) << 10) + ((uint32)text[i] - 0xDC00);
 				i++;

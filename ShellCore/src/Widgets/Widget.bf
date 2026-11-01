@@ -273,21 +273,21 @@ abstract class Widget : RuntimeObject, IPropertyHost, IMethodHost, IEventSource,
 
 	// ---- IPropertyHost -------------------------------------------------------------------------------------------
 
-	public virtual Value GetProperty(PropertyDescriptor property)
+	override public Value GetProperty(PropertyDescriptor property)
 	{
 		if (property == WidgetTypes.sIsEffectivelyEnabled)
 			return Value.FromBool(mIsEffectivelyEnabled);
 		return mProperties.Get(property);
 	}
 
-	public Result<void, PropertyError> SetProperty(PropertyDescriptor property, Value value)
+	override public Result<void, PropertyError> SetProperty(PropertyDescriptor property, Value value)
 	{
 		if (mProperties.Set(property, value) case .Err(let error))
 			return .Err(error);
 		return .Ok;
 	}
 
-	public IObservable GetObservable(PropertyDescriptor property)
+	override public IObservable GetObservable(PropertyDescriptor property)
 	{
 		return mProperties.Observe(property);
 	}

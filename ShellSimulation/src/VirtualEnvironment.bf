@@ -94,8 +94,9 @@ class VirtualEnvironment : IVirtualEnvironment
 		snapshot.mClockSeconds = mClock.GetMonotonicSeconds();
 
 		let probe = scope String(id);
-		if (mSnapshots.Remove(probe, var oldKey, var oldSnapshot))
+		if (mSnapshots.TryGet(probe, var oldKey, var oldSnapshot))
 		{
+			mSnapshots.Remove(probe);
 			delete oldKey;
 			delete oldSnapshot;
 		}

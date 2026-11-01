@@ -44,7 +44,7 @@ class RuntimeBindingResolver : IBindingResolver
 		switch (source.mKind)
 		{
 		case .WidgetProperty:
-			host = mContext.FindByStableId(source.mTarget) as IPropertyHost;
+			host = mContext.FindByStableId(source.mTarget);
 			if (host == null)
 			{
 				Fail("BND0001", scope $"Binding source object {source.mTarget} does not exist.", context);

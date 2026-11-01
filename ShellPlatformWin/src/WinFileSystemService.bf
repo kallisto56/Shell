@@ -101,7 +101,7 @@ class WinFileSystemService : IFileSystemService
 		return operation;
 	}
 
-	IOperation RunShellOperation(uint32 function, List<String> sources, StringView destination, uint16 flags, StringView what)
+	IOperation RunShellOperation(uint32 @function, List<String> sources, StringView destination, uint16 flags, StringView what)
 	{
 		let operation = mLog.Add(new ImmediateOperation());
 		if (sources.Count == 0)
@@ -119,7 +119,7 @@ class WinFileSystemService : IFileSystemService
 		}
 
 		SHFILEOPSTRUCTW op = default;
-		op.wFunc = function;
+		op.wFunc = @function;
 		op.pFrom = from.Ptr;
 		op.pTo = destination.IsEmpty ? null : to.Ptr;
 		op.fFlags = flags;

@@ -22,7 +22,7 @@ class VirtualFileNode
 	{
 		for (let child in mChildren)
 		{
-			if (child.mName.Equals(name, true))
+			if (child.mName.Equals(name, .Ordinal))
 				return child;
 		}
 		return null;

@@ -164,7 +164,7 @@ class VirtualWindowManager : IWindowTracker
 
 	public void CopyFrom(VirtualWindowManager other)
 	{
-		DeleteAndClearItems!(mWindows);
+		mWindows.ClearAndDeleteItems();
 		mTaskbarButtons.Clear();
 		for (let source in other.mWindows)
 		{

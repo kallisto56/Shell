@@ -21,7 +21,7 @@ static class WinFind
 
 		WIN32_FIND_DATAW data = default;
 		let handle = NativeKernel32.FindFirstFileW(wide.Ptr, &data);
-		if (handle == (void*)(int)-1)
+		if (handle == (void*)((int)-1))
 			return NativeKernel32.GetLastError();
 
 		repeat

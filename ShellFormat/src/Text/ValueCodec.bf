@@ -75,7 +75,7 @@ static class ValueCodec
 		return true;
 	}
 
-	static bool ReadFloats(StringView text, int count, float[4] output, String error)
+	static bool ReadFloats(StringView text, int count, ref float[4] output, String error)
 	{
 		var index = 0;
 		for (let token in text.Split(' ', .RemoveEmptyEntries))
@@ -157,19 +157,19 @@ static class ValueCodec
 		case .Vector2:
 		{
 			float[4] numbers = default;
-			if (!ReadFloats(text, 2, numbers, error)) return .Err;
+			if (!ReadFloats(text, 2, ref numbers, error)) return .Err;
 			return .Ok(Value.FromVector2(numbers[0], numbers[1]));
 		}
 		case .Color:
 		{
 			float[4] numbers = default;
-			if (!ReadFloats(text, 4, numbers, error)) return .Err;
+			if (!ReadFloats(text, 4, ref numbers, error)) return .Err;
 			return .Ok(Value.FromColor(numbers[0], numbers[1], numbers[2], numbers[3]));
 		}
 		case .Rect:
 		{
 			float[4] numbers = default;
-			if (!ReadFloats(text, 4, numbers, error)) return .Err;
+			if (!ReadFloats(text, 4, ref numbers, error)) return .Err;
 			return .Ok(Value.FromRect(numbers[0], numbers[1], numbers[2], numbers[3]));
 		}
 		case .Handle:

@@ -115,7 +115,7 @@ class WinWindowTracker : IWindowTracker
 	// Takes a new snapshot and raises events for the differences.
 	public void Poll()
 	{
-		DeleteAndClearItems!(mScratch);
+		mScratch.ClearAndDeleteItems();
 		mZCounter = 0;
 		mForeground = NativeUser32.GetForegroundWindow();
 		NativeUser32.EnumWindows(=> EnumCallback, (int)Internal.UnsafeCastToPtr(this));

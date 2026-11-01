@@ -61,10 +61,10 @@ class TextReader
 		for (var raw in text.Split('\n'))
 		{
 			number++;
-			let line = raw.Trim();           // also removes a trailing '\r'
-			if (line.IsEmpty)
+			raw.Trim();           // also removes a trailing '\r'
+			if (raw.IsEmpty)
 				continue;
-			mLines.Add(line);
+			mLines.Add(raw);
 			mLineNumbers.Add(number);
 		}
 
@@ -108,7 +108,9 @@ class TextReader
 		}
 
 		let dot = parts[1].IndexOf('.');
-		if (dot <= 0 || !(NumberFormat.ParseInt(parts[1].Substring(0, dot)) case .Ok(let major)) || !(NumberFormat.ParseInt(parts[1].Substring(dot + 1)) case .Ok(let minor))
+		var a = (NumberFormat.ParseInt(parts[1].Substring(0, dot)) case .Ok(let major));
+		var b = (NumberFormat.ParseInt(parts[1].Substring(dot + 1)) case .Ok(let minor));
+		if (dot <= 0 || !a || !b
 			|| major < 0 || major > 65535 || minor < 0 || minor > 65535)
 		{
 			Fail("SER0102", scope $"'{parts[1]}' is not a valid format version (expected <major>.<minor>)", mLineNumbers[mIndex - 1]);
@@ -190,7 +192,8 @@ class TextReader
 
 			if (line.EndsWith('['))
 			{
-				let name = line.Substring(0, line.Length - 1).Trim();
+				let name = StringView(line);
+				name.Substring(0, line.Length - 1).Trim();
 				if (!IsName(name))
 				{
 					Fail("SER0107", scope $"'{name}' is not a valid group name", lineNumber);
@@ -243,9 +246,14 @@ class TextReader
 			return false;
 		}
 
-		let name = line.Substring(0, colon).Trim();
-		let kindName = line.Substring(colon + 1, equals - colon - 1).Trim();
-		let payload = line.Substring(equals + 1).Trim();
+		let name = StringView(line);
+		name.Substring(0, colon).Trim();
+
+		let kindName = StringView(line);
+		kindName.Substring(colon + 1, equals - colon - 1).Trim();
+		let payload = StringView(line);
+		payload.Substring(equals + 1).Trim();
+
 		if (!IsName(name))
 		{
 			Fail("SER0108", scope $"'{name}' is not a valid field name", lineNumber);

@@ -124,7 +124,7 @@ class WinInputBridge
 		case .Hand: cursorId = 32649;
 		default: cursorId = 32512;      // IDC_ARROW
 		}
-		NativeInput.SetCursor(NativeInput.LoadCursorW(null, (char16*)cursorId));
+		NativeInput.SetCursor(NativeInput.LoadCursorW(null, (char16*)(void*)cursorId));
 	}
 
 	public bool HandleMessage(void* hwnd, uint32 msg, uint wParam, int lParam, ref int result)

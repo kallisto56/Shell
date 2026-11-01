@@ -41,7 +41,7 @@ class CommandStack
 			return;
 		}
 
-		DeleteAndClearItems!(mRedo);
+		mRedo.ClearAndDeleteItems();
 		if (mSavedDepth > mUndo.Count)
 			mSavedDepth = -1;
 
@@ -70,7 +70,7 @@ class CommandStack
 			delete group;
 			return;
 		}
-		DeleteAndClearItems!(mRedo);
+		mRedo.ClearAndDeleteItems();
 		mUndo.Add(group);
 	}
 

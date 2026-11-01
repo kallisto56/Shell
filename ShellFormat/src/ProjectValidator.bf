@@ -156,7 +156,9 @@ static class ProjectValidator
 			for (let link in graph.mLinks)
 			{
 				ids.Add(link.mId, "link");
-				if (!pins.TryGetValue(link.mFromPin, let from) || !pins.TryGetValue(link.mToPin, let to))
+				var a = pins.TryGetValue(link.mFromPin, let from);
+				var b = pins.TryGetValue(link.mToPin, let to);
+				if (!a || !b)
 				{
 					sink.Error("VAL0201", "A link connects a pin that does not exist.", link.mId);
 					continue;

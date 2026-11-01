@@ -29,7 +29,7 @@ class MutationQueue
 			if (rounds > cMaxRounds)
 			{
 				context.mDiagnostics.Error("CORE0001", "Deferred mutations kept queuing more mutations; the cascade was cut off.");
-				DeleteAndClearItems!(mPending);
+				mPending.ClearAndDeleteItems();
 				break;
 			}
 

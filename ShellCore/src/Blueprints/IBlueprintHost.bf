@@ -11,5 +11,5 @@ using Shell.Core;
 interface IBlueprintHost
 {
 	IBlueprintInstance Resolve(BlueprintRef reference, IBlueprintInstance caller);
-	CallResult Call(BlueprintRef reference, IBlueprintInstance caller, StringView function, Span<Value> arguments);
+	CallResult Call(BlueprintRef reference, IBlueprintInstance caller, StringView @function, Span<Value> arguments);
 }

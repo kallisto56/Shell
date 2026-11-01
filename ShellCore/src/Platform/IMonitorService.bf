@@ -2,6 +2,7 @@ namespace Shell.Platform;
 
 using System;
 using System.Collections;
+using Shell.Core;
 
 interface IMonitorService
 {

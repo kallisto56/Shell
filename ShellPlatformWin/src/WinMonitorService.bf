@@ -52,7 +52,7 @@ class WinMonitorService : IMonitorService
 
 	public void Refresh()
 	{
-		DeleteAndClearItems!(mMonitors);
+		mMonitors.ClearAndDeleteItems();
 		NativeUser32.EnumDisplayMonitors(null, null, => EnumCallback, (int)Internal.UnsafeCastToPtr(this));
 	}
 

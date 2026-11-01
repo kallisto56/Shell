@@ -23,13 +23,15 @@ class VirtualFileSystem
 		mRoot.mChildren.Add(mRecycleBin);
 	}
 
-	static void Split(StringView path, List<StringView> parts)
+	static void Split(StringView path, List<String> parts)
 	{
 		for (let part in path.Split('/', .RemoveEmptyEntries))
 		{
-			let trimmed = part.Trim();
+			var trimmed = new String(part)..Trim();
 			if (!trimmed.IsEmpty)
 				parts.Add(trimmed);
+			else
+				delete trimmed;
 		}
 	}
 
@@ -37,7 +39,8 @@ class VirtualFileSystem
 	{
 		let normalized = scope String(path);
 		normalized.Replace('\\', '/');
-		let parts = scope List<StringView>();
+		let parts = new List<String>();
+		defer { DeleteContainerAndItems!(parts); }
 		Split(normalized, parts);
 
 		var node = mRoot;
@@ -79,7 +82,8 @@ class VirtualFileSystem
 	{
 		let normalized = scope String(path);
 		normalized.Replace('\\', '/');
-		let parts = scope List<StringView>();
+		let parts = new List<String>();
+		defer { DeleteContainerAndItems!(parts); }
 		Split(normalized, parts);
 
 		var node = mRoot;
@@ -222,7 +226,7 @@ class VirtualFileSystem
 
 	public void EmptyRecycleBin()
 	{
-		DeleteAndClearItems!(mRecycleBin.mChildren);
+		mRecycleBin.mChildren.ClearAndDeleteItems();
 	}
 
 	// Directories first, then files; each group sorted by name (ordinal, ignoring case).
@@ -239,7 +243,7 @@ class VirtualFileSystem
 	// Replaces this file system's content with a deep copy of `other` (same object identity, so services keep working).
 	public void CopyFrom(VirtualFileSystem other)
 	{
-		DeleteAndClearItems!(mRoot.mChildren);
+		mRoot.mChildren.ClearAndDeleteItems();
 		mRecycleBin = null;
 		for (let child in other.mRoot.mChildren)
 		{

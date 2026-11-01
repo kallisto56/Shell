@@ -2,6 +2,7 @@ namespace Shell.Platform;
 
 using System;
 using System.Collections;
+using Shell.Core;
 
 // Observes and controls the windows of other applications. The shell coexists with normal Windows applications: only
 // windows reported here that are not ShellOwned are candidates for taskbar items.

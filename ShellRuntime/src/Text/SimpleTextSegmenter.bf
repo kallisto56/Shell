@@ -105,16 +105,17 @@ class SimpleTextSegmenter : ITextSegmenter
 	}
 
 	// 0 whitespace, 1 word (letters, digits, underscore, most non-ASCII letters), 2 punctuation / symbols
-	static int ClassOf(uint32 cp)
+	static int ClassOf(uint32 char)
 	{
-		if (cp == ' ' || cp == '\t' || cp == '\n' || cp == '\r' || cp == 0xA0 || InRange(cp, 0x2000, 0x200A) || cp == 0x2028 || cp == 0x2029 || cp == 0x3000)
+		var cp = (char32)char;
+		if (cp == ' ' || cp == '\t' || cp == '\n' || cp == '\r' || char == 0xA0 || InRange(char, 0x2000, 0x200A) || char == 0x2028 || char == 0x2029 || char == 0x3000)
 			return 0;
-		if (cp < 0x80)
+		if (char < 0x80)
 		{
 			let bAlnum = (cp >= 'a' && cp <= 'z') || (cp >= 'A' && cp <= 'Z') || (cp >= '0' && cp <= '9') || cp == '_';
 			return bAlnum ? 1 : 2;
 		}
-		if (InRange(cp, 0x2010, 0x206F) || InRange(cp, 0x3001, 0x303F) || InRange(cp, 0xFF01, 0xFF0F) || InRange(cp, 0xA1, 0xBF) || IsPictographic(cp))
+		if (InRange(char, 0x2010, 0x206F) || InRange(char, 0x3001, 0x303F) || InRange(char, 0xFF01, 0xFF0F) || InRange(char, 0xA1, 0xBF) || IsPictographic(char))
 			return 2;
 		return 1;
 	}

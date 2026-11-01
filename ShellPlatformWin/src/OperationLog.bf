@@ -17,6 +17,6 @@ class OperationLog
 
 	public void Prune()
 	{
-		DeleteAndClearItems!(mOperations);
+		mOperations.ClearAndDeleteItems();
 	}
 }

@@ -121,7 +121,7 @@ class BindingSystem : IRuntimeSystem, IObjectDestroyListener
 				continue;
 			}
 
-			let host = owner as IPropertyHost;
+			let host = owner;
 			if (host == null)
 				continue;
 			let property = host.GetDescriptor().FindProperty(binding.mDescriptor.mTargetProperty);

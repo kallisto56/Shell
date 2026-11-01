@@ -1,6 +1,7 @@
 namespace Shell.Core;
 
 using System;
+using Shell.Reflection;
 
 // Base of everything that lives in a running shell (Widget, Element, Blueprint instance, animation controller ...).
 //
@@ -12,7 +13,7 @@ using System;
 //      Deactivating objects, handles keep resolving.
 //   2. RuntimeContext.FlushDestruction() (Commit phase) detaches the object from its owner, calls OnDestroy,
 //      releases the handle and deletes it.
-abstract class RuntimeObject
+abstract class RuntimeObject : IPropertyHost
 {
 	public RuntimeContext mContext;
 	public Handle mHandle;
@@ -72,4 +73,12 @@ abstract class RuntimeObject
 		OnDestroy();
 		mState = .Destroyed;
 	}
+	public TypeDescriptor GetDescriptor()
+	{
+		return default;
+	}
+
+	virtual public Value GetProperty(PropertyDescriptor property) => default;
+	virtual public Result<void, PropertyError> SetProperty(PropertyDescriptor property, Value value) => default;
+	virtual public IObservable GetObservable(PropertyDescriptor property) => default;
 }

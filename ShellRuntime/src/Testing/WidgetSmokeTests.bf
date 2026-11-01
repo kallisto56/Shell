@@ -98,7 +98,7 @@ static class WidgetSmokeTests
 		}
 	}
 
-	static StringView TextOf(TextBox box) => box.GetProperty(TextBox.sText).AsString();
+	static StringView TextOf(TextBox @box) => @box.GetProperty(TextBox.sText).AsString();
 
 	static public int Run(DiagnosticSink sink)
 	{
@@ -175,74 +175,74 @@ static class WidgetSmokeTests
 	static void TestTextBoxEditing(DiagnosticSink sink, ref int failures)
 	{
 		let h = scope Harness();
-		let box = h.mWidgets.Create<TextBox>(h.mRoot, RectF(20, 50, 200, 24));
+		let @box = h.mWidgets.Create<TextBox>(h.mRoot, RectF(20, 50, 200, 24));
 
 		h.Click(30, 60);
-		Check(box.GetProperty(WidgetTypes.sFocused).AsBool(), "clicking a text box focuses it", sink, ref failures);
+		Check(@box.GetProperty(WidgetTypes.sFocused).AsBool(), "clicking a text box focuses it", sink, ref failures);
 
 		h.Text("h\u{E9}llo");
-		Check(TextOf(box) == "h\u{E9}llo", "typed text appears in Text", sink, ref failures);
-		Check(box.GetProperty(TextBox.sTextLength).AsInt() == 5, "TextLength counts UTF-16 units", sink, ref failures);
+		Check(TextOf(@box) == "h\u{E9}llo", "typed text appears in Text", sink, ref failures);
+		Check(@box.GetProperty(TextBox.sTextLength).AsInt() == 5, "TextLength counts UTF-16 units", sink, ref failures);
 
 		h.Tap(.Backspace);
-		Check(TextOf(box) == "h\u{E9}ll", "Backspace removes the last character", sink, ref failures);
+		Check(TextOf(@box) == "h\u{E9}ll", "Backspace removes the last character", sink, ref failures);
 
 		h.Tap(.Left, .Shift);
 		h.Tap(.Left, .Shift);
-		Check(box.GetProperty(TextBox.sSelectionLength).AsInt() == 2 && box.GetProperty(TextBox.sHasSelection).AsBool(), "Shift+Left twice selects two characters", sink, ref failures);
+		Check(@box.GetProperty(TextBox.sSelectionLength).AsInt() == 2 && @box.GetProperty(TextBox.sHasSelection).AsBool(), "Shift+Left twice selects two characters", sink, ref failures);
 		h.Text("X");
-		Check(TextOf(box) == "h\u{E9}X", "typing replaces the selection", sink, ref failures);
+		Check(TextOf(@box) == "h\u{E9}X", "typing replaces the selection", sink, ref failures);
 
 		h.Tap(.A, .Control);
-		Check(box.GetProperty(TextBox.sSelectionLength).AsInt() == 3, "Ctrl+A selects everything", sink, ref failures);
+		Check(@box.GetProperty(TextBox.sSelectionLength).AsInt() == 3, "Ctrl+A selects everything", sink, ref failures);
 		h.Text("e\u{301}");
-		Check(TextOf(box) == "e\u{301}", "combining sequence is inserted as typed", sink, ref failures);
+		Check(TextOf(@box) == "e\u{301}", "combining sequence is inserted as typed", sink, ref failures);
 		h.Tap(.Backspace);
-		Check(TextOf(box).IsEmpty, "Backspace deletes a whole grapheme cluster (base + combining mark)", sink, ref failures);
+		Check(TextOf(@box).IsEmpty, "Backspace deletes a whole grapheme cluster (base + combining mark)", sink, ref failures);
 
 		h.Text("abc def");
 		h.Tap(.Left, .Control);
-		Check(box.GetProperty(TextBox.sCaretIndex).AsInt() == 4, "Ctrl+Left moves to the start of the word", sink, ref failures);
+		Check(@box.GetProperty(TextBox.sCaretIndex).AsInt() == 4, "Ctrl+Left moves to the start of the word", sink, ref failures);
 	}
 
 	static void TestTextBoxIme(DiagnosticSink sink, ref int failures)
 	{
 		let h = scope Harness();
-		let box = h.mWidgets.Create<TextBox>(h.mRoot, RectF(20, 50, 200, 24));
+		let @box = h.mWidgets.Create<TextBox>(h.mRoot, RectF(20, 50, 200, 24));
 		h.Click(30, 60);
 		h.Text("ab");
 
-		let client = (ITextInputClient)box;
+		let client = (ITextInputClient)@box;
 		client.SetComposition("\u{306B}\u{307B}\u{3093}", 3);
-		Check(box.GetProperty(TextBox.sIsComposing).AsBool(), "IsComposing is true during composition", sink, ref failures);
-		Check(TextOf(box) == "ab", "composition text is not part of Text", sink, ref failures);
+		Check(@box.GetProperty(TextBox.sIsComposing).AsBool(), "IsComposing is true during composition", sink, ref failures);
+		Check(TextOf(@box) == "ab", "composition text is not part of Text", sink, ref failures);
 
 		client.GetSelection(var start, var end);
 		client.SetComposition("", 0);
 		client.ReplaceText(start, end, "\u{65E5}\u{672C}");
-		Check(TextOf(box) == "ab\u{65E5}\u{672C}", "committed IME text is inserted at the caret", sink, ref failures);
-		Check(!box.GetProperty(TextBox.sIsComposing).AsBool(), "composition ended after the commit", sink, ref failures);
+		Check(TextOf(@box) == "ab\u{65E5}\u{672C}", "committed IME text is inserted at the caret", sink, ref failures);
+		Check(!@box.GetProperty(TextBox.sIsComposing).AsBool(), "composition ended after the commit", sink, ref failures);
 	}
 
 	static void TestReflection(DiagnosticSink sink, ref int failures)
 	{
 		let h = scope Harness();
-		let box = h.mWidgets.Create<TextBox>(h.mRoot, RectF(20, 50, 200, 24));
+		let @box = h.mWidgets.Create<TextBox>(h.mRoot, RectF(20, 50, 200, 24));
 
 		let one = scope List<Value>();
 		one.Add(Value.FromInt(1));
-		Check(box.Invoke(TextBox.sSelect, one) case .Err(.ArgumentCount), "calling Select with a missing argument fails with ArgumentCount", sink, ref failures);
+		Check(@box.Invoke(TextBox.sSelect, one) case .Err(.ArgumentCount), "calling Select with a missing argument fails with ArgumentCount", sink, ref failures);
 
 		let wrong = scope List<Value>();
 		wrong.Add(Value.FromString("x"));
 		wrong.Add(Value.FromInt(1));
-		Check(box.Invoke(TextBox.sSelect, wrong) case .Err(.ArgumentType), "calling Select with a string fails with ArgumentType", sink, ref failures);
+		Check(@box.Invoke(TextBox.sSelect, wrong) case .Err(.ArgumentType), "calling Select with a string fails with ArgumentType", sink, ref failures);
 
 		let text = h.mContext.mStrings.InternTransient("abc");
-		box.SetProperty(TextBox.sText, Value.FromString(text));
-		Check(box.GetProperty(TextBox.sTextLength).AsInt() == 3, "setting Text from outside updates the computed TextLength", sink, ref failures);
+		@box.SetProperty(TextBox.sText, Value.FromString(text));
+		Check(@box.GetProperty(TextBox.sTextLength).AsInt() == 3, "setting Text from outside updates the computed TextLength", sink, ref failures);
 
-		Check(box.SetProperty(WidgetTypes.sHovered, Value.FromBool(true)) case .Err(.ReadOnly), "State properties cannot be written from outside", sink, ref failures);
-		Check(box.SetProperty(TextBox.sTextLength, Value.FromInt(7)) case .Err(.ReadOnly), "Computed properties cannot be written", sink, ref failures);
+		Check(@box.SetProperty(WidgetTypes.sHovered, Value.FromBool(true)) case .Err(.ReadOnly), "State properties cannot be written from outside", sink, ref failures);
+		Check(@box.SetProperty(TextBox.sTextLength, Value.FromInt(7)) case .Err(.ReadOnly), "Computed properties cannot be written", sink, ref failures);
 	}
 }

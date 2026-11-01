@@ -259,7 +259,7 @@ class TextBox : Widget, ITextInputClient
 		var i = 0;
 		while (i < input.Length)
 		{
-			let cp = Utf8.Decode(input, i, var length);
+			let cp = (char32)Utf8.Decode(input, i, var length);
 			if (cp == '\r')
 			{
 				if (i + 1 < input.Length && input[i + 1] == '\n')
@@ -274,7 +274,7 @@ class TextBox : Widget, ITextInputClient
 			{
 				if (bTabs) output.Append('\t');
 			}
-			else if (cp >= 0x20 && cp != 0x7F)
+			else if ((uint32)cp >= 0x20 && (uint32)cp != 0x7F)
 			{
 				output.Append(input, i, length);
 			}

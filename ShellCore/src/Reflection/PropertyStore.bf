@@ -30,8 +30,6 @@ class PropertyStore
 
 	public ~this()
 	{
-		for (let value in mValues)
-			ReleaseValue(value);
 		for (let observable in mObservables)
 			delete observable;
 		delete mObservables;
@@ -65,9 +63,7 @@ class PropertyStore
 		if (old.Equals(stored))
 			return .Ok(false);
 
-		RetainValue(stored);
 		mValues[property.mIndex] = stored;
-		ReleaseValue(old);
 		if (mObservables[property.mIndex] != null)
 			mObservables[property.mIndex].NotifyChanged();
 		if (mListener != null)

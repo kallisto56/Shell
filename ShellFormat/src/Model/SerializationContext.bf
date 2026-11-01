@@ -2,6 +2,7 @@ namespace Shell.Format;
 
 using System;
 using Shell.Core;
+using Shell.Serialization;
 
 // State shared by the typed serializers of one load or save operation.
 class SerializationContext

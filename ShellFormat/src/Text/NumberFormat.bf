@@ -60,7 +60,10 @@ static class NumberFormat
 	{
 		if (!IsValidInteger(text))
 			return .Err;
-		return int64.Parse(text);
+		if (int64.Parse(text) case .Ok(var value))
+			return .Ok(value);
+		else
+			return .Err;
 	}
 
 	static public Result<double> ParseDouble(StringView text)

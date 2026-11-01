@@ -42,7 +42,7 @@ class DiagnosticSink
 
 	public void Clear()
 	{
-		DeleteAndClearItems!(mItems);
+		mItems.ClearAndDeleteItems();
 		mErrorCount = 0;
 		mWarningCount = 0;
 	}

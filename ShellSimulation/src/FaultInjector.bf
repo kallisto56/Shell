@@ -30,7 +30,7 @@ class FaultInjector : IFaultInjector
 
 	public void Clear()
 	{
-		DeleteAndClearItems!(mRules);
+		mRules.ClearAndDeleteItems();
 	}
 
 	public FaultDecision Evaluate(StringView operation, StringView target)
@@ -66,6 +66,8 @@ class FaultInjector : IFaultInjector
 
 	static bool MatchFrom(StringView pattern, int p, StringView text, int t)
 	{
+		var p;
+		var t;
 		while (p < pattern.Length)
 		{
 			if (pattern[p] == '*')
@@ -81,7 +83,7 @@ class FaultInjector : IFaultInjector
 				}
 				return false;
 			}
-			if (t >= text.Length || Char8.ToLower(pattern[p]) != Char8.ToLower(text[t]))
+			if (t >= text.Length || pattern[p].ToLower != text[t].ToLower)
 				return false;
 			p++;
 			t++;
