@@ -1,0 +1,14 @@
+namespace Juno;
+
+using System;
+using System.Interop;
+
+enum ACCENT_STATE : int32
+{
+	case ACCENT_DISABLED = 0;
+	case ACCENT_ENABLE_GRADIENT = 1;
+	case ACCENT_ENABLE_TRANSPARENTGRADIENT = 2;
+	case ACCENT_ENABLE_BLURBEHIND = 3;
+	case ACCENT_ENABLE_ACRYLICBLURBEHIND = 4;
+	case ACCENT_INVALID_STATE = 5;
+}

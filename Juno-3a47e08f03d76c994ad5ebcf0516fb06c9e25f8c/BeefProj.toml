@@ -1,0 +1,43 @@
+FileVersion = 1
+
+[Project]
+Name = "Juno"
+TargetType = "BeefLib"
+StartupObject = "Juno.Program"
+
+[Dependencies]
+corlib = "*"
+FreeType = {Git = "https://github.com/kallisto56/FreeType"}
+
+[Configs.Debug.Win64]
+LibPaths = ["$(ProjectDir)/dist/Juno.lib"]
+PreBuildCmds = ["\"$(ProjectDir)/bin/build.bat\" \"$(ProjectDir)/Juno.vcxproj\" /p:Configuration=Debug /p:Platform=X64 /v:m\""]
+CleanCmds = ["\"$(ProjectDir)/bin/build.bat\" \"$(ProjectDir)/Juno.vcxproj\" /p:Configuration=Debug /p:Platform=X64 /t:Clean"]
+
+[[ProjectFolder.Items]]
+Type = "Source"
+Path = ".gitignore"
+
+[[ProjectFolder.Items]]
+Type = "Source"
+Path = "BeefProj.toml"
+
+[[ProjectFolder.Items]]
+Type = "Source"
+Path = "BeefSpace.toml"
+
+[[ProjectFolder.Items]]
+Type = "Source"
+Path = "Juno.sln"
+
+[[ProjectFolder.Items]]
+Type = "Source"
+Path = "Juno.vcxproj"
+
+[[ProjectFolder.Items]]
+Type = "Source"
+Path = "LICENSE"
+
+[[ProjectFolder.Items]]
+Type = "Source"
+Path = "README.md"

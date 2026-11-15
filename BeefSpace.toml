@@ -1,0 +1,5 @@
+FileVersion = 1
+Projects = {ShellCore = {Path = "ShellCore"}, ShellRuntime = {Path = "ShellRuntime"}, ShellFormat = {Path = "ShellFormat"}, ShellSimulation = {Path = "ShellSimulation"}, ShellPlatformWin = {Path = "ShellPlatformWin"}, ShellRender = {Path = "ShellRender"}, Juno = {Path = "Juno-3a47e08f03d76c994ad5ebcf0516fb06c9e25f8c"}}
+
+[Workspace]
+StartupProject = "ShellRuntime"

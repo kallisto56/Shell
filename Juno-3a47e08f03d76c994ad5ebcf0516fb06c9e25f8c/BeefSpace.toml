@@ -1,0 +1,5 @@
+FileVersion = 1
+Projects = {Juno = {Path = "."}}
+
+[Workspace]
+StartupProject = "Juno"

@@ -1,0 +1,6 @@
+FileVersion = 1
+
+[Locks.FreeType.Git]
+URL = "https://github.com/kallisto56/FreeType"
+Tag = ""
+Hash = "81ef33484e15d7ac817cf69e3596822d025c7476"

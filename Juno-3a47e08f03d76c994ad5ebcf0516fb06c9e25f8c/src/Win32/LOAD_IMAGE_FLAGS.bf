@@ -1,0 +1,21 @@
+namespace Juno;
+
+using System;
+using System.Interop;
+
+enum LOAD_IMAGE_FLAGS : uint32
+{
+	case LR_DEFAULTCOLOR = 0x0000;
+	case LR_MONOCHROME = 0x0001;
+	case LR_COLOR = 0x0002;
+	case LR_COPYRETURNORG = 0x0004;
+	case LR_COPYDELETEORG = 0x0008;
+	case LR_LOADFROMFILE = 0x0010;
+	case LR_LOADTRANSPARENT = 0x0020;
+	case LR_DEFAULTSIZE = 0x0040;
+	case LR_VGACOLOR = 0x0080;
+	case LR_LOADMAP3DCOLORS = 0x1000;
+	case LR_CREATEDIBSECTION = 0x2000;
+	case LR_COPYFROMRESOURCE = 0x4000;
+	case LR_SHARED = 0x8000;
+}

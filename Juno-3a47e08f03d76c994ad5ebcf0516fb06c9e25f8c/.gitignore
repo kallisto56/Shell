@@ -1,0 +1,8 @@
+.DS_Store
+.vs
+**/build/*
+**/dist/*
+**/recovery/*
+**/src/cpp/thirdparty/*
+BeefSpace_User.toml
+Juno.vcxproj.user
