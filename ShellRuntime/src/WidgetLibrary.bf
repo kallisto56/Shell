@@ -9,6 +9,14 @@ using Shell.Elements;
 // so any number of contexts - editor preview, simulation, real shell - share them.
 static class WidgetLibrary
 {
+	// Widget classes that can be created from saved type names. UserWidget instances are created by the UserWidgetHost.
+	static public void RegisterFactory(WidgetFactory factory)
+	{
+		factory.Register<ContainerWidget>("Container");
+		factory.Register<Button>("Button");
+		factory.Register<TextBox>("TextBox");
+	}
+
 	static public bool RegisterTypes(RuntimeContext context)
 	{
 		bool bOk = true;
@@ -17,6 +25,7 @@ static class WidgetLibrary
 		if (context.mTypes.Find("Container") == null) bOk &= ContainerWidget.Register(context);
 		if (context.mTypes.Find("Button") == null) bOk &= Button.Register(context);
 		if (context.mTypes.Find("TextBox") == null) bOk &= TextBox.Register(context);
+		if (context.mTypes.Find("UserWidget") == null) bOk &= UserWidget.Register(context);
 		return bOk;
 	}
 }

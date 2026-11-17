@@ -74,6 +74,7 @@ static class ElementSerializer
 		w.StrIf("Name", element.mName);
 		w.Id("Layer", element.mLayer);
 		w.Int("ZIndex", element.mZIndex);
+		w.Bool("Essential", element.bEssential);
 		w.EnumIf("Composite", element.mComposite, CompositeMode.None);
 		PropertyValues.Write(element.mProperties, w);
 		BindingSerializer.WriteList(element.mBindings, w);
@@ -123,6 +124,7 @@ static class ElementSerializer
 		r.StrInto("Name", element.mName);
 		element.mLayer = r.Id("Layer");
 		element.mZIndex = (int)r.Int("ZIndex");
+		element.bEssential = r.Bool("Essential");
 		element.mComposite = r.Enum("Composite", CompositeMode.None);
 		PropertyValues.Read(r, element.mProperties);
 		BindingSerializer.ReadList(r, "bindings", element.mBindings);

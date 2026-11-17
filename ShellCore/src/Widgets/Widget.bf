@@ -25,6 +25,8 @@ abstract class Widget : RuntimeObject, IPropertyHost, IMethodHost, IEventSource,
 	public PropertyStore mProperties;
 	public EventDispatcher mEvents = new .() ~ delete _;
 	public ElementTree mElements;
+	public StableId mSkinScope;             // scope the widget's skin element ids were derived from (none = ids as authored); style targets are resolved with it
+	public StableId mComponentStyle;        // style assigned to this instance (none = default style of the widget type)
 	public Widget mParent;
 	public List<Widget> mChildren = new .() ~ delete _;
 	public List<Binding> mBindings = new .() ~ DeleteContainerAndItems!(_);    // owned; registered with the BindingSystem

@@ -415,3 +415,42 @@ Surfaces are premultiplied R8G8B8A8 targets rounded to 32 pixels and recycled; g
 
 ### Known limits
 Clipping is axis aligned (rotated clips use their bounding box); path fills are simple polygons without holes; backdrop copies the whole current target; no gradients yet (styling stage); video needs an `IVideoSource`.
+
+## 16. Stage 5 (UserWidgets, styling, reusable composition): what exists
+
+### UserWidget instances (runtime)
+* One widget class, `UserWidget`, for every definition. An instance is an ordinary widget (bounds, parent, bindings, events) with exactly one hidden content root built from the definition. All inner objects get `StableId.Combine(instance id, node id)`,
+  so any number of instances are independent and every inner object can be addressed by a path of authored ids. Nested instances fold the combine along the path.
+* Public surface = the definition's `ExposedMember`s. `UserWidgetTypeFactory` builds one `TypeDescriptor` per definition (properties, events, methods copied from the inner members; cached by signature, so an edit that does not change the interface keeps
+  the same type). Properties are mirrored: the instance holds its own value and observables (bindings survive rebuilds), inner changes flow in, writes are written through. Events are re-raised, methods forwarded (`ExposedLink`). Blueprint variables wait for the Blueprint host (UWD0024).
+* Overrides (`OverrideEntry`: path + property + value) apply to inner objects after the content exists, in the `InstanceOverride` layer. Saved instance values for exposed properties are written through the same way. Orphaned entries are kept and reported (UWD0030/31).
+* `UserWidgetHost` (Commit phase) propagates definition edits: it compares each instance's built revision with the definition's revision; when anything changed ALL its instances are rebuilt in the same Commit (outer before inner, links dropped first and restored inner-first),
+  identity / parent / bounds / bindings / subscribers are kept, an interface change swaps the instance's property store (bindings reading it are detached and re-attached). Runtime state inside the content starts over.
+* Missing definition, dependency cycle (`CompositionRegistry.FindCycle`) or nesting beyond 16 levels: a placeholder instance (`IsMissing`) with a diagnostic (UWD0001-3).
+* `CompositionInstantiator` + `WidgetFactory` create live trees from `WidgetNodeData` (type names, property values, bindings, skins via `ElementInstantiator`, children, instances). `WidgetRuntime.UseProject(project)` makes themes, styles and definitions live;
+  `InstantiateDefinition` creates an instance of any definition (the entry composition included).
+
+### Styling
+* `PropertyStore` now arbitrates contributions per property: Default < Theme < ComponentStyle < StateStyle < InstanceOverride < Animation < Blueprint < Solver. `Set` (authored values, bindings, overrides) is the InstanceOverride contribution once a property has contributions;
+  systems use `SetContribution(property, layer, source, value, blend, weight, order)` / `ClearSource(source)`. Animation, Blueprints and solvers will plug in the same way.
+* `ThemeManager` (IThemeProvider): active theme, parent chain, alias tokens (cycle safe), one epoch / observable for token bindings. `StyleRegistry`: styles by id and by widget type, base-style chains. `StyleSystem` (Bindings phase, before the binding system):
+  per widget the assigned style (`WidgetNodeData.mComponentStyle`) or the default style of its type (or nearest base type); matching rules (state flags + named state) sorted by (priority, declaration order); setters target the widget or a skin element (authored id + the skin scope),
+  value = literal or token; rules with a condition use the StateStyle layer, the others ComponentStyle. Only widgets whose flags / style / theme epoch / registry revision / skin structure changed are restyled; a restyle removes the system's previous contributions first.
+  Only `Styleable` properties can be styled; problems are reported once (STY00xx).
+
+### Editor representation (Shell.Editor, in ShellCore; pure data model, no running shell needed)
+* `CompositionOutline`: hierarchy of widgets, instances (expanded read-only through their definitions), skins and elements; every node has a path usable for overrides; flags: essential, read-only, exposed, override count, missing.
+* Layer editing: `LayerEditModel` (rows back to front with the elements drawn in each, inherited layers marked, where child widgets are drawn) and `HierarchyEditor` (add / move / remove / rename layers, assign elements to layers, z-index, move / create / delete elements).
+  Rules: Content cannot be removed, Underlay stays before and Overlay after Content, layers are renumbered around Content (0), essential elements (`ElementNodeData.bEssential`, saved as `Essential`) cannot be deleted, the skin root is fixed, no element below itself.
+  Layer assignment never changes ownership and ownership changes never change the layer. Everything is a command on the `CommandStack` and bumps the definition revision.
+* `OverrideEditor` (validated paths), `DefinitionEditor` (expose / unexpose (blocked while used, unless forced) / rename with rewriting of instance values and bindings), `DefinitionEditSession` (revision bump).
+* Create a UserWidget from existing content: `UserWidgetExtractor.Prepare` -> `ExtractUserWidgetCommand`. The selected widgets (same parent) become the root of a new ordinary definition (several are wrapped in a container), an instance takes their place and the old position;
+  outside bindings that read them are redirected through automatically exposed properties, exposed members that pointed inside are redirected, inside bindings that read outside widgets block the extraction (report). Undo restores everything exactly.
+
+### Revisions of earlier stages
+`Contribution.mSource`, `ContributionStack.RemoveSource / RemoveLayerSource`; `PropertyStore` contributions; `Widget.mSkinScope / mComponentStyle`; `Element.bEssential`; `ElementNodeData.bEssential` (+ serializer); `ElementInstantiator.ApplySkin(widget, data, scope)`;
+`BindingSystem.TakeSourcesOf / RestoreSources`; `CompositionRegistry.Remove / AddOwned`; new `DefinitionIndex`.
+
+### Known limits
+Blueprint variables / functions cannot be exposed yet (needs the Blueprint host); overrides address properties, not structure (no per-instance add / remove of children); rebuilds reset runtime state inside the content; the theme layer of arbitration is reserved (tokens are used through
+setters and StyleToken bindings); style transitions belong to the animation stage; the editor UI widgets that present the outline and layer model come with the editor stage.

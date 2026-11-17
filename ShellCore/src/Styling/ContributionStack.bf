@@ -12,6 +12,18 @@ class ContributionStack
 
 	public int mCount => mItems.Count;
 
+	// Removes the contributions of one writer in one layer. `order` < 0 matches every order of that writer.
+	public bool RemoveLayerSource(PropertyLayer layer, int source, int order = -1)
+	{
+		return mItems.RemoveAll(scope (c) => c.mLayer == layer && c.mSource == source && (order < 0 || c.mOrder == order)) > 0;
+	}
+
+	// Removes everything one writer contributed, in every layer.
+	public bool RemoveSource(int source)
+	{
+		return mItems.RemoveAll(scope (c) => c.mSource == source) > 0;
+	}
+
 	public void Clear()
 	{
 		mItems.Clear();

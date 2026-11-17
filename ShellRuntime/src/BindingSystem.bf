@@ -113,6 +113,27 @@ class BindingSystem : IRuntimeSystem, IObjectDestroyListener
 		binding.Detach();
 	}
 
+	// Detaches the bindings whose source is `object` (its property store is about to be replaced). RestoreSources attaches them again.
+	public void TakeSourcesOf(RuntimeObject object, List<Binding> output)
+	{
+		for (let binding in mBindings)
+		{
+			if (binding.mSourceObject == object.mHandle)
+			{
+				binding.Detach();
+				binding.mSourceObject = Handle.sNone;
+				binding.bDirty = true;
+				output.Add(binding);
+			}
+		}
+	}
+
+	public void RestoreSources(List<Binding> bindings)
+	{
+		for (let binding in bindings)
+			binding.Attach(mResolver);
+	}
+
 	public void OnObjectDestroying(RuntimeObject object)
 	{
 		for (var i = mBindings.Count - 1; i >= 0; i--)

@@ -30,6 +30,26 @@ class CompositionRegistry
 		return true;
 	}
 
+	// Takes a definition out of the registry and hands its ownership to the caller (undo of "extract UserWidget").
+	public CompositionDefinition Remove(StableId id)
+	{
+		if (!mDefinitions.TryGetValue(id, let definition))
+			return null;
+		mDefinitions.Remove(id);
+		mOrdered.Remove(definition);
+		return definition;
+	}
+
+	// Adds a definition the caller keeps no reference to (the registry owns it). Same as Add but without the duplicate-id deletion.
+	public bool AddOwned(CompositionDefinition definition)
+	{
+		if (mDefinitions.ContainsKey(definition.mId))
+			return false;
+		mDefinitions[definition.mId] = definition;
+		mOrdered.Add(definition);
+		return true;
+	}
+
 	public CompositionDefinition Find(StableId id)
 	{
 		if (mDefinitions.TryGetValue(id, let definition))

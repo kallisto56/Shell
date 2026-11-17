@@ -8,3 +8,7 @@
 * `StringView` is a view into `char8*`: it does not own memory and must not outlive its source.
 * Use the Beef source (github.com/beefytech/Beef) and docs (beeflang.org/docs) when unsure about corlib behavior.
 * Shell may depend on Juno: use Juno's `Rect`, `Insets`, `Vector2`, `Matrix3x2`, `Color`, `Graphics`, `Font`, `Texture2D`, `RenderTarget` instead of defining equivalents.
+* `float` has instance properties (`w.IsNaN`), not static `float.IsNaN(w)`.
+* `StringView.Trim()` mutates the view: `var token = StringView(raw)..Trim();`.
+* Parenthesize mixed `||` / `&&` chains that contain comparisons.
+* Do not leave unused locals (comment them out).

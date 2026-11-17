@@ -8,6 +8,8 @@ using Shell.Widgets;
 using Shell.Input;
 using Shell.Platform;
 using Shell.Layout;
+using Shell.Composition;
+using Shell.Styling;
 
 // Wires the widget layer into a kernel: input queue and router (Input phase), focus manager, widget host, binding resolver and
 // binding system (Bindings phase), the widget event queue for Blueprints, and the built-in widget types.
@@ -32,6 +34,15 @@ class WidgetRuntime
 	public BindingSystem mBindings ~ delete _;
 	public LayoutSystem mLayout ~ delete _;
 	public ElementInstantiator mInstantiator ~ delete _;
+	public ThemeManager mThemes ~ delete _;
+	public StyleRegistry mStyles ~ delete _;
+	public StyleSystem mStyle ~ delete _;
+	public WidgetFactory mFactory ~ delete _;
+	public UserWidgetTypeFactory mUserTypes ~ delete _;
+	public UserWidgetHost mUserWidgets ~ delete _;
+	public CompositionInstantiator mComposition ~ delete _;
+	public ShellProject mProject;               // the project whose themes, styles and definitions are live (not owned)
+	List<WidgetNodeData> mEntryNodes = new .() ~ DeleteContainerAndItems!(_);
 	public ContainerWidget mRoot;
 
 	public this(ShellKernel kernel, PlatformServices services = null, ITextMeasurer textMeasurer = null, IImageMeasurer imageMeasurer = null)
@@ -60,8 +71,20 @@ class WidgetRuntime
 		kernel.AddSystem(mRouter);
 		mLayout = new LayoutSystem(mContext, textMeasurer, imageMeasurer);
 		mInstantiator = new ElementInstantiator(mContext, mBindings);
+		mThemes = new ThemeManager();
+		mStyles = new StyleRegistry();
+		mResolver.mThemes = mThemes;
+		mStyle = new StyleSystem(mContext, mThemes, mStyles);
+		mFactory = new WidgetFactory();
+		WidgetLibrary.RegisterFactory(mFactory);
+		mUserTypes = new UserWidgetTypeFactory(mContext);
+		mUserWidgets = new UserWidgetHost(mContext, mUserTypes, mBindings);
+		mComposition = new CompositionInstantiator(mContext, mFactory, mBindings, mInstantiator, mUserWidgets);
+
+		kernel.AddSystem(mStyle);
 		kernel.AddSystem(mBindings);
 		kernel.AddSystem(mLayout);
+		kernel.AddSystem(mUserWidgets);
 		mContext.mWidgetHost = mHost;
 	}
 
@@ -70,7 +93,34 @@ class WidgetRuntime
 		mKernel.RemoveSystem(mRouter);
 		mKernel.RemoveSystem(mBindings);
 		mKernel.RemoveSystem(mLayout);
+		mKernel.RemoveSystem(mStyle);
+		mKernel.RemoveSystem(mUserWidgets);
 		mContext.mWidgetHost = null;
+	}
+
+	// Makes the themes, component styles and UserWidget definitions of a project live. The project is not owned and must outlive the runtime.
+	// The first theme becomes active when none is. Definitions edited later (revision change) propagate to their instances automatically.
+	public void UseProject(ShellProject project)
+	{
+		mProject = project;
+		for (let theme in project.mThemes)
+			mThemes.Add(theme);
+		if (!mThemes.mActiveId.mIsValid && project.mThemes.Count > 0)
+			mThemes.SetActive(project.mThemes[0].mId);
+		for (let style in project.mStyles)
+			mStyles.Add(style);
+		mUserWidgets.mRegistry = project.mCompositions;
+		mUserTypes.mRegistry = project.mCompositions;
+	}
+
+	// Creates a live instance of a definition (a UserWidget) below `parent` (null = no parent). The runtime keeps the instance node.
+	public UserWidget InstantiateDefinition(StableId definitionId, Widget parent, StableId instanceId = .sNone)
+	{
+		let node = new WidgetNodeData();
+		node.mId = instanceId.mIsValid ? instanceId : mContext.mIds.Next();
+		node.mSourceDefinition = definitionId;
+		mEntryNodes.Add(node);
+		return mUserWidgets.CreateInstance(node, parent, StableId.sNone, 0);
 	}
 
 	// Destroys the widget tree (call before the runtime and context are deleted).
@@ -100,6 +150,7 @@ class WidgetRuntime
 		mRoot = Create<ContainerWidget>(null, RectF(0, 0, width, height));
 		mRouter.SetRoot(mRoot);
 		mLayout.SetRoot(mRoot);
+		mStyle.SetRoot(mRoot);
 		return mRoot;
 	}
 

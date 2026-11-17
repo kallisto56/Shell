@@ -22,7 +22,8 @@ class ElementNodeData
 	public List<PropertyValueData> mProperties = new .() ~ delete _;
 	public List<BindingDescriptor> mBindings = new .() ~ DeleteContainerAndItems!(_);
 	public BindingDescriptor mVisibleWhen ~ delete _;
-	public BindingDescriptor mExistsWhen ~ delete _;     // children are a template: created while the condition holds, destroyed otherwise
+	public BindingDescriptor mExistsWhen ~ delete _;
+	public bool bEssential;                  // the Widget's behavior depends on this element: it cannot be deleted or moved out of the skin     // children are a template: created while the condition holds, destroyed otherwise
 	public List<EffectDescriptor> mEffects = new .() ~ DeleteContainerAndItems!(_);
 	public List<ElementNodeData> mChildren = new .() ~ DeleteContainerAndItems!(_);   // ownership order
 }

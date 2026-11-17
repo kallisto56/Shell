@@ -27,6 +27,7 @@ class Element : RuntimeObject, IPropertyChangeListener
 	public TypeDescriptor mType;
 	public PropertyStore mProperties;
 	public String mName = new .() ~ delete _;
+	public bool bEssential;                 // copied from the saved description; editors refuse to delete it
 
 	// Ownership
 	public Element mParent;

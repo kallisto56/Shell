@@ -39,9 +39,10 @@ class ElementInstantiator : IElementTemplateHost
 	}
 
 	// Creates the elements and layers of a widget skin. The widget's element tree must be empty.
-	public bool ApplySkin(Widget widget, ElementTreeData data)
+	public bool ApplySkin(Widget widget, ElementTreeData data, StableId scopeId = .sNone)
 	{
 		let tree = widget.mElements;
+		widget.mSkinScope = scopeId;
 		if (tree.mRoot != null)
 		{
 			mContext.mDiagnostics.Error("ELM0040", "The widget already has a skin; remove its elements first.", widget.mStableId);
@@ -62,7 +63,7 @@ class ElementInstantiator : IElementTemplateHost
 
 		if (data.mRoot == null)
 			return true;
-		let root = CreateNode(tree, data.mRoot, StableId.sNone);
+		let root = CreateNode(tree, data.mRoot, scopeId);
 		if (root == null)
 			return false;
 		tree.Attach(root, null);
@@ -85,6 +86,7 @@ class ElementInstantiator : IElementTemplateHost
 		let id = scopeId.mIsValid ? StableId.Combine(scopeId, node.mId) : node.mId;
 		let element = tree.CreateElement(node.mKind, type, id);
 		element.mName.Set(node.mName);
+		element.bEssential = node.bEssential;
 		element.mLayer = node.mLayer;
 		element.SetZIndex(node.mZIndex);
 		element.SetComposite(node.mComposite);
