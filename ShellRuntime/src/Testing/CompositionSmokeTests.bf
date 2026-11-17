@@ -115,9 +115,9 @@ static class CompositionSmokeTests
 		card.mRoot = Node(pool, "Container", 100);
 		card.mRoot.mSkin = new ElementTreeData();
 		card.mRoot.mSkin.mRoot = Shape(101);
-		let box = Node(pool, "TextBox", 102);
-		Prop(box, pool, "Bounds", Value.FromRect(10, 10, 200, 24));
-		card.mRoot.mChildren.Add(box);
+		let @box = Node(pool, "TextBox", 102);
+		Prop(@box, pool, "Bounds", Value.FromRect(10, 10, 200, 24));
+		card.mRoot.mChildren.Add(@box);
 		card.mExposed.Add(Expose(.Property, "Text", 102, "Text", .String, true, pool));
 		card.mExposed.Add(Expose(.Event, "Submitted", 102, "Submitted", .None, false, pool));
 		card.mExposed.Add(Expose(.Property, "Back", 101, "Fill", .Color, true, pool));
@@ -168,6 +168,7 @@ static class CompositionSmokeTests
 		h.mProject.mCompositions.Add(main, h.mContext.mDiagnostics);
 
 		h.mWidgets.UseProject(h.mProject);
+		// WARNING 168: The variable 'host' is assigned but its value is never used
 		let host = h.mWidgets.InstantiateDefinition(StableId(2), h.mRoot);
 		h.Tick();
 

@@ -3,6 +3,7 @@ namespace Shell.Reflection;
 using System;
 using System.Collections;
 using Shell.Core;
+using Shell.Styling;
 
 // Value storage for the properties of one object, laid out by its TypeDescriptor. Detects real changes, keeps
 // per-property versions and notifies observers; the owner decides what to invalidate (see PropertyDescriptor.mInvalidates).
